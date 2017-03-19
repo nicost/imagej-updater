@@ -502,6 +502,11 @@ public class UpdaterUtil {
 	/**
 	 * Determines whether the ImageJ root directory is in an area protected by the OS.
 	 * 
+	 * However, even if it is, the user can easily give themselves write 
+	 * permission by giving themselves write permission (in the security tab, 
+	 * under Properties).  Therefore, only return true if the directory is
+	 * not writeable.
+	 * 
 	 * <p>On Windows Vista and later, C:\Program Files is a protected location.
 	 * 
 	 * @param ijRoot the root directory to test
@@ -530,7 +535,7 @@ public class UpdaterUtil {
 					}
 				}
 				for (File dir = ijRoot.getCanonicalFile(); dir != null; dir = dir.getParentFile()) {
-					if (protectedFiles.contains(dir)) {
+					if (protectedFiles.contains(dir) && !ijRoot.canWrite()) {
 						protectedFiles.add(ijRoot);
 						return true;
 					}
